@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-import 'package:dummy_api/models/product.dart';
+import 'package:dummy_api/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
 
-class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key});
+class UserScreen extends StatefulWidget {
+  const UserScreen({super.key});
 
   @override
-  State<ProductScreen> createState() => _ProductScreenState();
+  State<UserScreen> createState() => _UserScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
-    getProduct();
+    getUser();
     return Scaffold(
-      body: FutureBuilder<Product>(
-        future: getProduct(),
+      body: FutureBuilder(
+        future: getUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -26,24 +26,25 @@ class _ProductScreenState extends State<ProductScreen> {
             );
           } else if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: snapshot.data!.products!.length,
+              itemCount: snapshot.data!.users!.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(snapshot.data!.products![index].title!),
+                  title: Text(snapshot.data!.users![index].lastName!),
                 );
               },
             );
           }
-
           return Container();
         },
       ),
     );
   }
 
-  Future<Product> getProduct() async {
-    var uri = Uri.parse("https://dummyjson.com/products");
+  Future<User> getUser() async {
+    var uri = Uri.parse("https://dummyjson.com/users");
     var res = await http.get(uri);
-    return Product.fromJson(jsonDecode(res.body));
+    var data = User.fromJson(jsonDecode(res.body));
+    print(data);
+    return User.fromJson(jsonDecode(res.body));
   }
 }
